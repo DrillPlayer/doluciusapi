@@ -1,0 +1,53 @@
+name: DoluciusAPI
+version: 1.0
+main: de.drillplayer.doluciusapi.DoluciusAPIMain
+
+commands:
+  ec:
+    aliases:
+      - enderchest
+        - echest
+        - enderc
+    description: "Open your enderchest"
+    usage: /<command>
+    permission: dapi.ec
+
+
+  tempban:
+    aliases:
+      - tban
+    description: "Temporarily ban someone"
+    usage: /<command> <target> <time(in hours)> <reason>
+    permission: dapi.tempban
+
+  wartung:
+    aliases:
+      - maintenance
+    description: "Toggle the maintenance mode"
+    usage: /<command>
+    permission: dapi.tempban
+
+  vanish:
+    aliases:
+      - v
+    description: "Toggle vanish"
+    usage: /<command>
+    permission: dapi.vanish
+
+
+  rulesaccept:
+      aliases:
+        - rulesacc
+      description: "Accept the rules"
+      usage: /<command>
+      permission: dapi.rules.accept
+
+  ip:
+    description: "Get someones IP"
+    usage: /<command> <Player>
+    permission: dapi.ip
+
+  uuid:
+    description: "Get someones UUID"
+    usage: /<command> <Player>
+    permission: dapi.uuid
