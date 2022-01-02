@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import de.drillplayer.doluciusapi.mysql.MySQL;
+import de.drillplayer.doluciusapi.mysql.SQLGetter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.permission.Permission;
@@ -16,6 +17,7 @@ import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -42,6 +44,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     private static FileConfiguration customIP;
 
     public MySQL SQL;
+    public SQLGetter data;
 
     @Override
     public void onEnable() {
@@ -63,6 +66,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         this.getCommand("uuid").setExecutor(new UUIDCommand());
         setupPermissions();
         this.SQL = new MySQL();
+        this.data = new SQLGetter(this);
 
         try {
             SQL.connect();
@@ -74,9 +78,11 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
 
         if (SQL.isConnected()) {
             Bukkit.getLogger().info("Datenbank ist connected");
+            data.createTable();
         }
 
     }
+
 
     @Override
     public void onDisable() {
@@ -136,6 +142,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     @EventHandler
 
     public void onJoin(PlayerJoinEvent event) {
+        data.createPlayer(event.getPlayer());
         event.setJoinMessage("");
         Player player = event.getPlayer();
         ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -323,6 +330,16 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
             } else if (ArrayUtils.contains(perms.getPlayerGroups(player), "default")) {
                 event.setFormat(spielerFormat);
             }
+        }
+    }
+
+    @EventHandler
+    public void onMobKill(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() instanceof Player) {
+            Player player = (Player) event.getEntity().getKiller();
+            data.addCoins(player.getUniqueId(), 100);
+            player.sendMessage(Color.GREEN + "+100 Coins");
+            player.sendMessage(Color.GREEN + "Aktuelle Coins: " + data.getCoins(player.getUniqueId()));
         }
     }
 
