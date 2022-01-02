@@ -31,7 +31,7 @@ public class VanishCommand implements CommandExecutor {
         if (sender instanceof Player) {
 
             Player player = (Player) sender;
-                if (perms.playerInGroup(player, "owner")) {
+                if (perms.playerInGroup(player, "owner") || perms.playerInGroup(player, "admin") || perms.playerInGroup(player, "dev") || perms.playerInGroup(player, "mod") || perms.playerInGroup(player, "sup")) {
                     vanish = !vanish;
                     if (vanish) {
                         for (Player all : Bukkit.getOnlinePlayers()) {
@@ -58,117 +58,10 @@ public class VanishCommand implements CommandExecutor {
                         }
                         player.sendMessage(ChatColor.RED + "Vanish wurde deaktiviert!");
                     }
-                } else if (perms.playerInGroup(player, "admin")) {
-                        vanish = !vanish;
-                        if (vanish) {
-                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                if (perms.playerInGroup(all, "default")) {
-                                    all.hidePlayer(plugin, player);
-                                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                    loadTablist(player, sb1);
-                                } else if (perms.playerInGroup(all, "vip")) {
-                                    all.hidePlayer(plugin, player);
-                                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                    loadTablist(player, sb1);
-                                } else if (perms.playerInGroup(all, "creator")) {
-                                    all.hidePlayer(plugin, player);
-                                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                    loadTablist(player, sb1);
-                                }
-                            }
-                            player.sendMessage( ChatColor.GREEN + "Vanish wurde aktiviert!");
-                        } else {
-                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                all.showPlayer(plugin, player);
-                                Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                loadTablist(player, sb1);
-                            }
-                            player.sendMessage(ChatColor.RED + "Vanish wurde deaktiviert!");
-                        }
-                    } else if (perms.playerInGroup(player, "dev")) {
-                            vanish = !vanish;
-                            if (vanish) {
-                                for (Player all : Bukkit.getOnlinePlayers()) {
-                                    if (perms.playerInGroup(all, "default")) {
-                                        all.hidePlayer(plugin, player);
-                                        Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                        loadTablist(player, sb1);
-                                    } else if (perms.playerInGroup(all, "vip")) {
-                                        all.hidePlayer(plugin, player);
-                                        Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                        loadTablist(player, sb1);
-                                    } else if (perms.playerInGroup(all, "creator")) {
-                                        all.hidePlayer(plugin, player);
-                                        Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                        loadTablist(player, sb1);
-                                    }
-                                }
-                                player.sendMessage( ChatColor.GREEN + "Vanish wurde aktiviert!");
-                            } else {
-                                for (Player all : Bukkit.getOnlinePlayers()) {
-                                    all.showPlayer(plugin, player);
-                                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                    loadTablist(player, sb1);
-                                }
-                                player.sendMessage(ChatColor.RED + "Vanish wurde deaktiviert!");
-                            }
-                        } else if (perms.playerInGroup(player, "mod")) {
-                                vanish = !vanish;
-                                if (vanish) {
-                                    for (Player all : Bukkit.getOnlinePlayers()) {
-                                        if (perms.playerInGroup(all, "default")) {
-                                            all.hidePlayer(plugin, player);
-                                            Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                            loadTablist(player, sb1);
-                                        } else if (perms.playerInGroup(all, "vip")) {
-                                            all.hidePlayer(plugin, player);
-                                            Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                            loadTablist(player, sb1);
-                                        } else if (perms.playerInGroup(all, "creator")) {
-                                            all.hidePlayer(plugin, player);
-                                            Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                            loadTablist(player, sb1);
-                                        }
-                                    }
-                                    player.sendMessage( ChatColor.GREEN + "Vanish wurde aktiviert!");
-                                } else {
-                                    for (Player all : Bukkit.getOnlinePlayers()) {
-                                        all.showPlayer(plugin, player);
-                                        Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                        loadTablist(player, sb1);
-                                    }
-                                    player.sendMessage(ChatColor.RED + "Vanish wurde deaktiviert!");
-                                }
-                            } else if (perms.playerInGroup(player, "sup")) {
-                                    vanish = !vanish;
-                                        if (vanish) {
-                                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                                if (perms.playerInGroup(all, "default")) {
-                                                    all.hidePlayer(plugin, player);
-                                                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                                    loadTablist(player, sb1);
-                                                } else if (perms.playerInGroup(all, "vip")) {
-                                                        all.hidePlayer(plugin, player);
-                                                        Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                                        loadTablist(player, sb1);
-                                                } else if (perms.playerInGroup(all, "creator")) {
-                                                            all.hidePlayer(plugin, player);
-                                                            Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                                            loadTablist(player, sb1);
-                                                }
-                                            }
-                                            player.sendMessage( ChatColor.GREEN + "Vanish wurde aktiviert!");
-                                        } else {
-                                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                            all.showPlayer(plugin, player);
-                                            Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                                            loadTablist(player, sb1);
-                                        }
-                                            player.sendMessage(ChatColor.RED + "Vanish wurde deaktiviert!");
-                                    }
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "Du hast keine Rechte um diesen Befehl auszuführen!");
-                                }
+
+                } else {
+                    player.sendMessage(ChatColor.RED + "Du hast keine Rechte um diesen Befehl auszuführen!");
+                }
         } else {
             assert sender != null;
             sender.sendMessage(ChatColor.RED + "Diesen Befehl darf nur ein Spieler ausführen!");
@@ -234,32 +127,6 @@ public class VanishCommand implements CommandExecutor {
 
             all.setScoreboard(board);
             player.setScoreboard(board);
-        }
-
-    }
-
-    public void setVanish(Plugin plugin, Player player) {
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            if (vanish) {
-                if (perms.playerInGroup(all, "default")) {
-                    all.hidePlayer(plugin, player);
-                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                    loadTablist(player, sb1);
-                } else if (perms.playerInGroup(all, "vip")) {
-                    all.hidePlayer(plugin, player);
-                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                    loadTablist(player, sb1);
-                } else if (perms.playerInGroup(all, "creator")) {
-                    all.hidePlayer(plugin, player);
-                    Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                    loadTablist(player, sb1);
-
-                }
-            } else {
-                all.showPlayer(plugin, player);
-                Scoreboard sb1 = Bukkit.getScoreboardManager().getNewScoreboard();
-                loadTablist(player, sb1);
-            }
         }
 
     }

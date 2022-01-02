@@ -42,12 +42,10 @@ commands:
       usage: /<command>
       permission: dapi.rules.accept
 
-  ip:
-    description: "Get someones IP"
-    usage: /<command> <Player>
-    permission: dapi.ip
 
-  uuid:
-    description: "Get someones UUID"
-    usage: /<command> <Player>
-    permission: dapi.uuid
+  enchant:
+    aliases:
+      - en
+    description: "Enchant an item"
+    usage: /<command> <Enchantment> <Value>
+    permission: dapi.enchant

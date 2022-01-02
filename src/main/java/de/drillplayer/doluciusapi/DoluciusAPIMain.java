@@ -34,14 +34,11 @@ import java.util.Set;
 
 public class DoluciusAPIMain extends JavaPlugin implements Listener {
     private static Permission perms = getPermissions();
-    private ProtocolManager protocolManager;
     private static DoluciusAPIMain instance;
     private File customConfigFile;
     private FileConfiguration customConfig;
     public static File customReportFile;
     private static FileConfiguration customReport;
-    public static File customIPFile;
-    private static FileConfiguration customIP;
 
     public MySQL SQL;
     public SQLGetter data;
@@ -51,7 +48,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         instance = this;
         createReport();
         createCustomConfig();
-        createIP();
         World world = Bukkit.getWorld("world");
         Difficulty peaceful = Difficulty.PEACEFUL;
         world.setDifficulty(peaceful);
@@ -62,8 +58,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         this.getCommand("wartung").setExecutor(new MaintenanceCommand());
         this.getCommand("vanish").setExecutor(new VanishCommand());
         this.getCommand("rulesaccept").setExecutor(new RulesCommand());
-        this.getCommand("ip").setExecutor(new IPCommand());
-        this.getCommand("uuid").setExecutor(new UUIDCommand());
+        this.getCommand("enchant").setExecutor(new EnchantCommand());
         setupPermissions();
         this.SQL = new MySQL();
         this.data = new SQLGetter(this);
@@ -78,7 +73,8 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
 
         if (SQL.isConnected()) {
             Bukkit.getLogger().info("Datenbank ist connected");
-            data.createTable();
+            data.createCoinTable();
+            data.createBanTable();
         }
 
     }
@@ -130,12 +126,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     }
 
 
-    @EventHandler
-    public void preLogin (AsyncPlayerPreLoginEvent event) throws IOException {
-        getIP().set("ips.players." + event.getName() + ".uuid", event.getUniqueId().toString());
-        getIP().set("ips.players." + event.getName() + ".ip", event.getAddress());
-        getIP().save(customIPFile);
-    }
 
 
 
@@ -148,123 +138,10 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
         loadTablist(player, board);
-        //loadScoreboard(player, board);
-        Bukkit.getLogger().info("Wartung: " + String.valueOf(MaintenanceCommand.wartung));
-        PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS,Integer.MAX_VALUE,1);
-        PotionEffect nojump = new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250);
-        if (!RulesCommand.getRules().contains(player.getName())) {
-            player.hidePlayer(this, player);
-            TextComponent text = new TextComponent(ChatColor.GREEN + "[AKZEPTIEREN]");
-            player.sendMessage(ChatColor.GRAY + "1. Verhaltensregeln \n" +
-                    "\n" +
-                    "1.1 Anweisungen vom Serverteam sind folge zu leisten! \n" +
-                    "\n" +
-                    "1.2 Pornographische, rechtsradikale, rassistische Skins und Namen werden hier nicht geduldet. \n" +
-                    "\n" +
-                    "1.3 Rassistische, rechtsradikale sowie pornographische Aussagen sind strengstens zu unterlassen! \n" +
-                    "\n" +
-                    "1.4 Werbung in jeglicher Art ist untersagt. \n" +
-                    "\n" +
-                    "1.5 Jeglicher Echtgeld-Handel ist untersagt. \n" +
-                    "\n" +
-                    "1.6 Beleidigungen, in jeglicher Sprache, so wie Spam als auch Provokation ist strengstens untersagt. \n" +
-                    "\n" +
-                    "1.7 Drohungen in jeglicher Art und Weise sind strengstens untersagt. \n" +
-                    "\n" +
-                    "1.8 Das senden von Links ist zu unterlassen. \n" +
-                    "\n" +
-                    "1.9 Respektiere die anderen Mitspieler. \n" +
-                    "\n" +
-                    "1.10 Das Nutzen von Zweitaccounts um unfaire Spielvorteile zu bekommen ist untersagt. \n" +
-                    "\n" +
-                    "1.11 Dauerhaftes schreiben im Capslock ist verboten. \n" +
-                    "\n" +
-                    "1.12 Betteln ist untersagt. \n" +
-                    "\n" +
-                    "1.13 Das benutzen einer VPN ist zu unterlassen. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "2. Regeln rund um Redstone und Farmen \n" +
-                    "\n" +
-                    "2.1 Das bauen von jeglichen Arten von Clocks ist strengstens untersagt! \n" +
-                    "\n" +
-                    "2.2 Vollautomatische Farmen sind zu unterlassen, halbautomatische sind akzeptabel. \n" +
-                    "\n" +
-                    "2.3 Jegliche Art von Lag-Maschinen sind strengstens untersagt! \n" +
-                    "\n" +
-                    "2.4 AFK-farmen sind untersagt. \n" +
-                    "\n" +
-                    "2.5 Sehr große Redstone Schaltungen, welche Server lastig sein können sind untersagt. \n" +
-                    "\n" +
-                    "2.6 Automatische Einlagerungssysteme sind untersagt. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "3. Modifikationen und Bots \n" +
-                    "\n" +
-                    "3.1 Das Nutzen von Hack-Clients oder allgemein Hacks (X-Ray, Fly Hacks, Autoclicker, Killaura usw.) ist strengstens untersagt. \n" +
-                    "\n" +
-                    "3.2 Erlaubt sind Modifikationen wie LabyMod, OptiFine, Forge, Fabric, Makromods, Texture-Packs (OHNE Blockfilter) oder Toggle-able Sneak. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "4. Spielfehler \n" +
-                    "\n" +
-                    "4.1 Das duplizieren von Items ist strengstens untersagt! \n" +
-                    "\n" +
-                    "4.2 Allgemeines ausnutzen von Spielbugs ist zu unterlassen. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "5. Landschafts-/Bauregeln \n" +
-                    "\n" +
-                    "5.1 Rechtsradikale, rassistische als auch pornographische bauten sind strengstens zu unterlassen. \n" +
-                    "\n" +
-                    "5.2 Griefing ist verboten. \n" +
-                    "\n" +
-                    "5.3 Userfallen sind strengstens untersagt. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "6. Rückerstattung von Items \n" +
-                    "\n" +
-                    "6.1 Falls ihr Items durch Bugs, Lags oder sonstiges verlieren solltet, ist eine Rückerstattung nicht garantiert. \n" +
-                    "\n" +
-                    " \n" +
-                    "\n" +
-                    "7. Abschließende Bestimmungen \n" +
-                    "\n" +
-                    "7.1 Teammitglieder behalten sich vor, das Verhalten von Spielern auch dann zu bestrafen, wenn es hier nicht als Fehlverhalten aufgelistet ist. \n" +
-                    "\n" +
-                    "7.2 Die Strafen können je nach Ermessen der Admins und dem Gewicht des „Vergehens“ angepasst werden. \n" +
-                    "\n" +
-                    "7.3 Die Entscheidung eines Teammitglids, unabhängig von seiner Position, ist absolut und kann nur von der jeweiligen Teamleitung oder einem Mitglied der Administration ungültig gemacht werden." +
-                    "\n" +
-                    "7.4 Beschwerden über Teammitglieder sollten per Discord über ein Ticket erfolgen. Andere beschwerden über Teammitglieder werden nicht bearbeitet." +
-                    "\n" +
-                    "7.5 Alle IP Adressen der Spieler werden aus rechtlichen Gründen gespeichert. Diese können ausschließlich von der Administration in Notfällen aufgerufen werden." +
-                    "\n" +
-                    "7.6 Die Administration behält sich das Recht vor, die Regeln jederzeit zu ändern"+
-                    "\n" +
-                    " \n" +
-                    "\n");
-            player.spigot().sendMessage(text);
-            text.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/rulesaccept") );
-            player.setWalkSpeed(0);
-            player.addPotionEffect(blindness);
-            player.addPotionEffect(nojump);
 
-        } else {
-            player.showPlayer(this, player);
-            player.setWalkSpeed(0.2f);
-            for (PotionEffect effect : player.getActivePotionEffects()) {
-                player.removePotionEffect(effect.getType());
-            }
-        }
         if (MaintenanceCommand.wartung) {
                 if (!perms.playerInGroup(player, "owner") || !perms.playerInGroup(player, "admin") || !perms.playerInGroup(player, "dev") || !perms.playerInGroup(player, "mod") || !perms.playerInGroup(player, "architekt") || !perms.playerInGroup(player, "sup") ) {
-                                        player.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
+                    player.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
                 }
         }
     }
@@ -309,9 +186,8 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
 
             Bukkit.getLogger().info(event.getRecipients().toString());
 
-            if (event.getPlayer().getName().equals("Syphica")) {
-                event.setFormat("§7[Spieler]§r %1$s >> Ich bin ein spast und marc, nini und nick sind ehrenmänner!");
-            } else if (ArrayUtils.contains(perms.getPlayerGroups(player), "owner")) {
+
+            if (ArrayUtils.contains(perms.getPlayerGroups(player), "owner")) {
                 event.setFormat(ownerFormat);
             } else if (ArrayUtils.contains(perms.getPlayerGroups(player), "admin")) {
                 event.setFormat(adminFormat);
@@ -331,6 +207,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
                 event.setFormat(spielerFormat);
             }
         }
+
     }
 
     @EventHandler
@@ -491,26 +368,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         customReport= new YamlConfiguration();
         try {
             customReport.load(customReportFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static FileConfiguration getIP() {
-        return instance.customIP;
-    }
-
-    private void createIP() {
-        customIPFile = new File(getDataFolder(), "ips.yml");
-        if (!customIPFile.exists()) {
-            customIPFile.getParentFile().mkdirs();
-            saveResource("ips.yml", false);
-        }
-
-        customIP= new YamlConfiguration();
-        try {
-            customIP.load(customIPFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

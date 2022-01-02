@@ -49,22 +49,12 @@ public class MaintenanceCommand implements CommandExecutor {
         }
         if (wartung) {
             for (Player all : Bukkit.getOnlinePlayers()) {
-                if (!perms.playerInGroup(all, "owner")) {
-                    if (!perms.playerInGroup(all, "admin")) {
-                        if (!perms.playerInGroup(all, "dev")) {
-                            if (!perms.playerInGroup(all, "mod")) {
-                                if (!perms.playerInGroup(all, "architekt")) {
-                                    if (!perms.playerInGroup(all, "sup")) {
-                                        all.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
-                                    }
-                                }
-                            }
-                        }
-                    }
+                if (!perms.playerInGroup(all, "owner") || !perms.playerInGroup(all, "admin") || !perms.playerInGroup(all, "dev") || !perms.playerInGroup(all, "mod") || !perms.playerInGroup(all, "architekt") || !perms.playerInGroup(all, "sup") ) {
+                    all.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
+                }
                 }
             }
         }
-    }
 
 
     public static Permission getPermissions() {
