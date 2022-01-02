@@ -39,6 +39,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         this.getCommand("wartung").setExecutor(new MaintenanceCommand());
         this.getCommand("vanish").setExecutor(new VanishCommand());
         this.getCommand("enchant").setExecutor(new EnchantCommand());
+        this.getCommand("coins").setExecutor(new CoinsCommand());
         setupPermissions();
         this.SQL = new MySQL();
         this.data = new SQLGetter(this);
@@ -182,14 +183,11 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
             Player player = (Player) event.getEntity().getKiller();
             data.addCoins(player.getUniqueId(), 100);
             player.sendMessage(ChatColor.GREEN + "+100 Coins");
-            player.sendMessage(ChatColor.GREEN + "Aktuelle Coins: " + data.getCoins(player.getUniqueId()));
+
         }
     }
 
     private static void loadTablist (Player player, Scoreboard board) {
-
-
-
         Objective objective = board.registerNewObjective("tab", "dummy", "Tab");
         objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             Team owner = board.registerNewTeam("a");

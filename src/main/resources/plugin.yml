@@ -41,3 +41,12 @@ commands:
     description: "Enchant an item"
     usage: /<command> <Enchantment> <Value>
     permission: dapi.enchant
+
+
+  coins:
+    aliases:
+      - coin
+      - c
+    description: "Find out how many Coins you have"
+    usage: /<command>
+    permission: dapi.coins
