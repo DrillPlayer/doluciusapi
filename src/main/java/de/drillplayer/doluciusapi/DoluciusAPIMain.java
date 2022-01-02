@@ -338,8 +338,8 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         if (event.getEntity().getKiller() instanceof Player) {
             Player player = (Player) event.getEntity().getKiller();
             data.addCoins(player.getUniqueId(), 100);
-            player.sendMessage(Color.GREEN + "+100 Coins");
-            player.sendMessage(Color.GREEN + "Aktuelle Coins: " + data.getCoins(player.getUniqueId()));
+            player.sendMessage(ChatColor.GREEN + "+100 Coins");
+            player.sendMessage(ChatColor.GREEN + "Aktuelle Coins: " + data.getCoins(player.getUniqueId()));
         }
     }
 
