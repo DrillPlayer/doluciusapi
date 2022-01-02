@@ -1,18 +1,9 @@
 package de.drillplayer.doluciusapi;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-import com.mysql.cj.jdbc.MysqlDataSource;
 import de.drillplayer.doluciusapi.mysql.MySQL;
 import de.drillplayer.doluciusapi.mysql.SQLGetter;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,22 +14,14 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Set;
 
 public class DoluciusAPIMain extends JavaPlugin implements Listener {
     private static Permission perms = getPermissions();
     private static DoluciusAPIMain instance;
-    private File customConfigFile;
-    private FileConfiguration customConfig;
-    public static File customReportFile;
-    private static FileConfiguration customReport;
 
     public MySQL SQL;
     public SQLGetter data;
@@ -46,8 +29,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
-        createReport();
-        createCustomConfig();
         World world = Bukkit.getWorld("world");
         Difficulty peaceful = Difficulty.PEACEFUL;
         world.setDifficulty(peaceful);
@@ -110,7 +91,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     }
 
 
-
     @EventHandler
     public void onWorldChange(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
@@ -126,11 +106,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     }
 
 
-
-
-
     @EventHandler
-
     public void onJoin(PlayerJoinEvent event) {
         data.createPlayer(event.getPlayer());
         event.setJoinMessage("");
@@ -274,59 +250,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
 
     }
 
-    private static void loadScoreboard (Player player, Scoreboard board) {
-        String rank = "a";
-
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            if (perms.playerInGroup(all, "owner")) {
-                rank = ChatColor.RED + "[Owner]";
-            } else if (perms.playerInGroup(all, "admin")) {
-                rank = ChatColor.RED + "[Admin]";
-            } else if (perms.playerInGroup(all, "dev")) {
-                rank = ChatColor.RED + "[Developer]";
-            } else if (perms.playerInGroup(all, "mod")) {
-                rank = ChatColor.RED + "[Moderator]";
-            } else if (perms.playerInGroup(all, "architekt")) {
-                rank = ChatColor.RED + "[Architekt]";
-            } else if (perms.playerInGroup(all, "sup")) {
-                rank = ChatColor.RED + "[Supporter]";
-            } else if (perms.playerInGroup(all, "creator")) {
-                rank = ChatColor.RED + "[Creator]";
-            } else if (perms.playerInGroup(all, "vip")) {
-                rank = ChatColor.RED + "[VIP]";
-            } else if (perms.playerInGroup(all, "default")) {
-                rank = ChatColor.RED + "[Spieler]";
-            }
-            Objective objective = board.registerNewObjective("rank", "dummy", "Rank");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            objective.setDisplayName(player.getName());
-            Score rankscore = objective.getScore("Dein Rang:");
-            rankscore.setScore(5);
-
-            Score rankscore1 = objective.getScore(rank);
-            rankscore1.setScore(4);
-
-            Score spacer2 = objective.getScore("§8 ");
-            spacer2.setScore(3);
-
-            Score playersonline = objective.getScore("Online Spieler:");
-            playersonline.setScore(2);
-
-            Score playersonline1 = objective.getScore(String.valueOf(Bukkit.getOnlinePlayers().size()));
-            playersonline1.setScore(1);
-
-            Score spacer3 = objective.getScore("§8 ");
-            spacer3.setScore(0);
-
-
-
-            all.setScoreboard(board);
-            player.setScoreboard(board);
-        }
-
-    }
-
-
     public static DoluciusAPIMain getInstance() {
         return instance;
     }
@@ -334,44 +257,5 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     public static Permission getPermissions() {
         return perms;
     }
-
-    public FileConfiguration getCustomConfig() {
-        return this.customConfig;
-    }
-
-    private void createCustomConfig() {
-        customConfigFile = new File(getDataFolder(), "custom.yml");
-        if (!customConfigFile.exists()) {
-            customConfigFile.getParentFile().mkdirs();
-            saveResource("custom.yml", false);
-        }
-
-        customConfig= new YamlConfiguration();
-        try {
-            customConfig.load(customConfigFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static FileConfiguration getReport() {
-        return instance.customReport;
-    }
-
-    private void createReport() {
-        customReportFile = new File(getDataFolder(), "reports.yml");
-        if (!customReportFile.exists()) {
-            customReportFile.getParentFile().mkdirs();
-            saveResource("reports.yml", false);
-        }
-
-        customReport= new YamlConfiguration();
-        try {
-            customReport.load(customReportFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
