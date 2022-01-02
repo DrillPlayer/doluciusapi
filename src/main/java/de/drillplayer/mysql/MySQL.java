@@ -1,4 +1,4 @@
-package de.drillplayer.doluciusapi.mysql;
+package de.drillplayer.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package de.drillplayer.doluciusapi.mysql;
+package de.drillplayer.mysql;
 
 import de.drillplayer.doluciusapi.DoluciusAPIMain;
 import org.bukkit.entity.Player;

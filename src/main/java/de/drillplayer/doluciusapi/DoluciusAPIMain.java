@@ -1,7 +1,7 @@
 package de.drillplayer.doluciusapi;
 
-import de.drillplayer.doluciusapi.mysql.MySQL;
-import de.drillplayer.doluciusapi.mysql.SQLGetter;
+import de.drillplayer.mysql.MySQL;
+import de.drillplayer.mysql.SQLGetter;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.ArrayUtils;
