@@ -98,13 +98,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         loadTablist(player, board);
     }
 
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent event) {
-        World world = Bukkit.getWorld("world");
-        Location respawn = new Location(world,-312 ,95 ,-7);
-        event.setRespawnLocation(respawn);
-    }
-
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
