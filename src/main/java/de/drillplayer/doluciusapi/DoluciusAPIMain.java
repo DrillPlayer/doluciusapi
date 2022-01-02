@@ -38,7 +38,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         this.getCommand("tempban").setExecutor(new BanCommand());
         this.getCommand("wartung").setExecutor(new MaintenanceCommand());
         this.getCommand("vanish").setExecutor(new VanishCommand());
-        this.getCommand("rulesaccept").setExecutor(new RulesCommand());
         this.getCommand("enchant").setExecutor(new EnchantCommand());
         setupPermissions();
         this.SQL = new MySQL();
@@ -150,15 +149,6 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        if (!RulesCommand.getRules().contains(player.getName())) {
-            event.setCancelled(true);
-            player.hidePlayer(this, player);
-            Set recipients = event.getRecipients();
-            for (String p : RulesCommand.getRules()) {
-                event.getRecipients().remove(Bukkit.getPlayer(p));
-            }
-            player.sendMessage(ChatColor.RED + "Du musst zuerst die Regeln akzeptieren!");
-        } else {
 
             Bukkit.getLogger().info(event.getRecipients().toString());
 
@@ -182,7 +172,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
             } else if (ArrayUtils.contains(perms.getPlayerGroups(player), "default")) {
                 event.setFormat(spielerFormat);
             }
-        }
+
 
     }
 

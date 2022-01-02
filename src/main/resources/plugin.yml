@@ -35,14 +35,6 @@ commands:
     permission: dapi.vanish
 
 
-  rulesaccept:
-      aliases:
-        - rulesacc
-      description: "Accept the rules"
-      usage: /<command>
-      permission: dapi.rules.accept
-
-
   enchant:
     aliases:
       - en
