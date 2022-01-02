@@ -2,6 +2,9 @@ package de.drillplayer.doluciusapi;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
+import de.drillplayer.doluciusapi.mysql.MySQL;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.permission.Permission;
@@ -24,6 +27,7 @@ import org.bukkit.scoreboard.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Set;
 
 public class DoluciusAPIMain extends JavaPlugin implements Listener {
@@ -37,8 +41,11 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     public static File customIPFile;
     private static FileConfiguration customIP;
 
+    public MySQL SQL;
+
     @Override
     public void onEnable() {
+        instance = this;
         createReport();
         createCustomConfig();
         createIP();
@@ -55,14 +62,26 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         this.getCommand("ip").setExecutor(new IPCommand());
         this.getCommand("uuid").setExecutor(new UUIDCommand());
         setupPermissions();
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        instance = this;
+        this.SQL = new MySQL();
+
+        try {
+            SQL.connect();
+        } catch (ClassNotFoundException e) {
+            Bukkit.getLogger().info("Datenbank ist nicht connected");
+        } catch (SQLException throwables) {
+            Bukkit.getLogger().info("Datenbank ist nicht connected");
+        }
+
+        if (SQL.isConnected()) {
+            Bukkit.getLogger().info("Datenbank ist connected");
+        }
 
     }
 
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called");
+        SQL.disconnect();
     }
 
     private boolean setupPermissions() {
@@ -237,21 +256,11 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
             }
         }
         if (MaintenanceCommand.wartung) {
-                if (!perms.playerInGroup(player, "owner")) {
-                    if (!perms.playerInGroup(player, "admin")) {
-                        if (!perms.playerInGroup(player, "dev")) {
-                            if (!perms.playerInGroup(player, "mod")) {
-                                if (!perms.playerInGroup(player, "architekt")) {
-                                    if (!perms.playerInGroup(player, "sup")) {
+                if (!perms.playerInGroup(player, "owner") || !perms.playerInGroup(player, "admin") || !perms.playerInGroup(player, "dev") || !perms.playerInGroup(player, "mod") || !perms.playerInGroup(player, "architekt") || !perms.playerInGroup(player, "sup") ) {
                                         player.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
-            }
         }
+    }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {

@@ -31,19 +31,19 @@ public class BanCommand implements CommandExecutor {
         if (args.length != 3) {
             sender.sendMessage("§cFalsche Syntax! Bitte nutze: /tempban <Spieler> <Zeit> <Grund>");
         } else if (args.length == 3) {
-            Player player = (Player) sender;
             String target = args[0];
             Player targetplayer = Bukkit.getPlayerExact(target);
             if (Bukkit.getOnlinePlayers().contains(targetplayer)) {
                 if (sender instanceof ConsoleCommandSender) {
-                    tempbanPlayer(args, player, target, targetplayer, sender);
+                    tempbanPlayer(args, target, targetplayer, sender);
                 } else if (sender instanceof Player) {
+                    Player player = (Player) sender;
                     if (perms.playerInGroup(player, "owner")) {
-                        tempbanPlayer(args, player, target, targetplayer, sender);
+                        tempbanPlayer(args, target, targetplayer, sender);
                     } else if (perms.playerInGroup(player, "admin")) {
                         if (!perms.playerInGroup(targetplayer, "owner")) {
                             if (!perms.playerInGroup(targetplayer, "admin")) {
-                                tempbanPlayer(args, player, target, targetplayer, sender);
+                                tempbanPlayer(args, target, targetplayer, sender);
                             } else {
                                 player.sendMessage("§cDu hast keine Rechte diesen Befehl auszuführen!");
                             }
@@ -53,7 +53,7 @@ public class BanCommand implements CommandExecutor {
                     } else if (perms.playerInGroup(player, "dev")) {
                         if (!perms.playerInGroup(targetplayer, "owner")) {
                             if (!perms.playerInGroup(targetplayer, "admin")) {
-                                tempbanPlayer(args, player, target, targetplayer, sender);
+                                tempbanPlayer(args, target, targetplayer, sender);
                             }
                         }
                     } else if (perms.playerInGroup(player, "mod")) {
@@ -63,7 +63,7 @@ public class BanCommand implements CommandExecutor {
                                     if (!perms.playerInGroup(targetplayer, "mod")) {
                                         if (!perms.playerInGroup(targetplayer, "architekt")) {
                                             if (!perms.playerInGroup(targetplayer, "sup")) {
-                                                tempbanPlayer(args, player, target, targetplayer, sender);
+                                                tempbanPlayer(args, target, targetplayer, sender);
                                             } else {
                                                 player.sendMessage("§cDu hast keine Rechte diesen Befehl auszuführen!");
                                             }
@@ -88,7 +88,7 @@ public class BanCommand implements CommandExecutor {
                     //a
                 } else {
                     assert false;
-                    player.sendMessage("§cDu hast keine Rechte diesen Befehl auszuführen!");
+                    sender.sendMessage("§cDu hast keine Rechte diesen Befehl auszuführen!");
                 }
             } else {
                 sender.sendMessage("§cDer angegebene Spieler ist nicht online!");
@@ -123,12 +123,12 @@ public class BanCommand implements CommandExecutor {
         }
     }
 
-    public void tempbanPlayer (String[] args, Player player, String target, Player targetplayer, CommandSender sender) {
+    public void tempbanPlayer (String[] args, String target, Player targetplayer, CommandSender sender) {
         new File(System.getProperty("user.dir") + "\\tempban").mkdirs();
         String currdir = System.getProperty("user.dir") + "\\tempban\\";
         Bukkit.getLogger().info("Printing to... " + currdir);
         if (args.length > 0) {
-                if (player != null) {
+                if (targetplayer != null) {
                     Bukkit.getLogger().info("Target: " + target);
                     String bantime = args[1];
                     int[] bantimeint = new int[1];
