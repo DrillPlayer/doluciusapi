@@ -56,6 +56,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
             Bukkit.getLogger().info("Datenbank ist connected");
             data.createCoinTable();
             data.createBanTable();
+            data.createMaintenanceTable();
         }
 
     }
@@ -84,7 +85,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     public void motd(ServerListPingEvent event) {
         event.setMotd(ChatColor.GREEN + "Wilkommen auf Dolucius' Projekt-Server!" + ChatColor.RESET + "" + ChatColor.DARK_GRAY +  " ⇉ 1.16.4\n" + ChatColor.GOLD + "" + ChatColor.BOLD + "Viel Spaß!");
         event.setMaxPlayers(Bukkit.getOnlinePlayers().size() + 1);
-        if (MaintenanceCommand.wartung) {
+        if (data.getMaintenance()) {
             event.setMotd(ChatColor.RED + "§cDer Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
             event.setMaxPlayers(-1);
         }
@@ -108,7 +109,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         Scoreboard board = manager.getNewScoreboard();
         loadTablist(player, board);
 
-        if (MaintenanceCommand.wartung) {
+        if (data.getMaintenance()) {
                 if (!perms.playerInGroup(player, "owner") && !perms.playerInGroup(player, "admin") && !perms.playerInGroup(player, "dev") && !perms.playerInGroup(player, "mod") && !perms.playerInGroup(player, "architekt") && !perms.playerInGroup(player, "sup") ) {
                     player.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
                 }

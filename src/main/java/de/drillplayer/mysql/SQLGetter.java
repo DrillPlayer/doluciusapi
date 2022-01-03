@@ -1,6 +1,7 @@
 package de.drillplayer.mysql;
 
 import de.drillplayer.doluciusapi.DoluciusAPIMain;
+import de.drillplayer.doluciusapi.MaintenanceCommand;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -36,6 +37,16 @@ public class SQLGetter {
         }
     }
 
+    public void createMaintenanceTable() {
+        PreparedStatement ps;
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS maintenance " + "(MAINTENANCE BOOLEAN, PRIMARY KEY (MAINTENANCE))");
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public void createPlayer(Player player) {
         try {
             UUID uuid = player.getUniqueId();
@@ -43,6 +54,18 @@ public class SQLGetter {
                 PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("INSERT IGNORE INTO doluciusapi (NAME,UUID) VALUES (?,?)");
                 ps.setString(1, player.getName());
                 ps.setString(2, uuid.toString());
+                ps.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void createMaintenance() {
+        try {
+            if (!existsMaintenance()) {
+                PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("INSERT IGNORE INTO maintenance (MAINTENANCE) VALUE (?)");
+                ps.setBoolean(1, false);
                 ps.executeUpdate();
             }
         } catch (SQLException throwables) {
@@ -77,6 +100,20 @@ public class SQLGetter {
         }
         return false;
     }
+
+    public boolean existsMaintenance() {
+        try {
+            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM maintenance");
+            ResultSet results = ps.executeQuery();
+            if (results.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
 
     public boolean existsBan(UUID uuid) {
         try {
@@ -118,6 +155,16 @@ public class SQLGetter {
         }
     }
 
+    public void updateMaintenance(boolean maintenance) {
+        try {
+            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("UPDATE maintenance SET MAINTENANCE=?");
+            ps.setBoolean(1, maintenance);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 
     public int getCoins(UUID uuid) {
         try {
@@ -134,6 +181,19 @@ public class SQLGetter {
             throwables.printStackTrace();
         }
         return 0;
+    }
+
+    public boolean getMaintenance() {
+        try {
+            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("SELECT MAINTENANCE FROM maintenance");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("MAINTENANCE");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
 }
