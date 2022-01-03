@@ -109,7 +109,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
         loadTablist(player, board);
 
         if (MaintenanceCommand.wartung) {
-                if (!perms.playerInGroup(player, "owner") || !perms.playerInGroup(player, "admin") || !perms.playerInGroup(player, "dev") || !perms.playerInGroup(player, "mod") || !perms.playerInGroup(player, "architekt") || !perms.playerInGroup(player, "sup") ) {
+                if (!perms.playerInGroup(player, "owner") && !perms.playerInGroup(player, "admin") && !perms.playerInGroup(player, "dev") && !perms.playerInGroup(player, "mod") && !perms.playerInGroup(player, "architekt") && !perms.playerInGroup(player, "sup") ) {
                     player.kickPlayer(ChatColor.RED + "Der Server befindet sich aktuell im " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Wartungsmodus!");
                 }
         }
@@ -173,7 +173,7 @@ public class DoluciusAPIMain extends JavaPlugin implements Listener {
     @EventHandler
     public void onMobKill(EntityDeathEvent event) {
         if (event.getEntity().getKiller() instanceof Player) {
-            Player player = (Player) event.getEntity().getKiller();
+            Player player = event.getEntity().getKiller();
             data.addCoins(player.getUniqueId(), 100);
             player.sendMessage(ChatColor.GREEN + "+100 Coins");
 
